@@ -32,7 +32,7 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt update -y
-apt install docker-ce docker-compose -y
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 usermod -aG docker $USER
 
 # Clone ShinSakanami/docker repo
