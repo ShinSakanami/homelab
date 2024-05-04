@@ -32,8 +32,12 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt update -y
-apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 usermod -aG docker $USER
+
+# Install Neofetch
+echo "*** Install Neofetch ***"
+apt install neofetch -y
 
 # Clone ShinSakanami/docker repo
 echo "*** Clone ShinSakanami/docker repo ***"
