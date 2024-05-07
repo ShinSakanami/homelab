@@ -2,7 +2,7 @@
 echo "=== Ubuntu VM Setup with Docker environment ==="
 
 # Check if user is root
-if [ "$EUID" -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "Error: please run the script with sudo"
     exit 1
 fi
@@ -33,7 +33,7 @@ if [ ! -x "$(command -v docker)" ]; then
     tee /etc/apt/sources.list.d/docker.list > /dev/null
   apt update -y
   apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-  usermod -aG docker $USER
+  usermod -aG docker $SUDO_USER
 fi
 
 # Neofetch
@@ -43,16 +43,16 @@ if [ ! -x "$(command -v neofetch)" ]; then
 fi
 
 # ShinSakanami/docker repo
-if [ ! -x "/home/$USER/docker" ]; then
+if [ ! -x "/home/$SUDO_USER/docker" ]; then
   echo "*** Clone ShinSakanami/docker repo ***"
-  cd /home/$USER
+  cd /home/$SUDO_USER
   git clone https://github.com/ShinSakanami/docker/
 fi
 
 # TrueNAS mounts
-if [ ! -x "/home/$USER/truenas" ]; then
+if [ ! -x "/home/$SUDO_USER/truenas" ]; then
   echo "*** Add TrueNAS folders ***"
-  cd /home/$USER
+  cd /home/$SUDO_USER
   mkdir truenas
   mkdir truenas/appdata
   mkdir truenas/cache
