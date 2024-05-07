@@ -3,45 +3,65 @@ echo "=== Ubuntu VM Setup with Docker environment ==="
 
 # Check if user is root
 if [ "$EUID" -ne 0 ]; then
-    echo "Error: please run the script as root"
+    echo "Error: please run the script with sudo"
     exit 1
 fi
 
 # Check if system is Ubuntu
-if ! [ -x "$(command -v apt-get)" ]; then
+if [ ! -x "$(command -v apt-get)" ]; then
     echo "Error: this script is not compatible with your system"
     exit 1
 fi
 
 # System update
 echo "*** System update ***"
-apt update && sudo apt upgrade -y
+apt update && apt upgrade -y
 
-# Install NFS tools
-echo "*** Install NFS tools ***"
-apt install nfs-common -y
+# Install Requirements
+echo "*** Install Requirements ***"
+apt install ca-certificates curl nfs-common git -y
 
-# Install Docker
-echo "*** Install Docker ***"
-apt install ca-certificates curl -y
-install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-chmod a+r /etc/apt/keyrings/docker.asc
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  tee /etc/apt/sources.list.d/docker.list > /dev/null
-apt update -y
-apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-usermod -aG docker $USER
+# Docker
+if [ ! -x "$(command -v docker)" ]; then
+  echo "*** Install Docker ***"
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    tee /etc/apt/sources.list.d/docker.list > /dev/null
+  apt update -y
+  apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+  usermod -aG docker $USER
+fi
 
-# Install Neofetch
-echo "*** Install Neofetch ***"
-apt install neofetch -y
+# Neofetch
+if [ ! -x "$(command -v neofetch)" ]; then
+  echo "*** Install Neofetch ***"
+  apt install neofetch -y
+fi
 
-# Clone ShinSakanami/docker repo
-echo "*** Clone ShinSakanami/docker repo ***"
-apt install git -y
-git clone https://github.com/ShinSakanami/docker/
+# ShinSakanami/docker repo
+if [ ! -x "/home/$USER/docker" ]; then
+  echo "*** Clone ShinSakanami/docker repo ***"
+  cd /home/$USER
+  git clone https://github.com/ShinSakanami/docker/
+fi
+
+# TrueNAS mounts
+if [ ! -x "/home/$USER/truenas" ]; then
+  echo "*** Add TrueNAS folders ***"
+  cd /home/$USER
+  mkdir truenas
+  mkdir truenas/appdata
+  mkdir truenas/cache
+  mkdir truenas/backups
+  mkdir truenas/share
+  # Add cloud folder yes/no
+  # Add media folder yes/no
+  # Add downloads folder yes/no
+fi
 
 echo "=== Setup finished ==="
+exit 0
