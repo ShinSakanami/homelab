@@ -49,19 +49,5 @@ if [ ! -x "/home/$SUDO_USER/docker" ]; then
   git clone https://github.com/ShinSakanami/docker/
 fi
 
-# TrueNAS mounts
-if [ ! -x "/home/$SUDO_USER/truenas" ]; then
-  echo "*** Add TrueNAS folders ***"
-  cd /home/$SUDO_USER
-  mkdir truenas
-  mkdir truenas/appdata
-  mkdir truenas/cache
-  mkdir truenas/backups
-  mkdir truenas/share
-  # Add cloud folder yes/no
-  # Add media folder yes/no
-  # Add downloads folder yes/no
-fi
-
 echo "=== Setup finished ==="
 exit 0
