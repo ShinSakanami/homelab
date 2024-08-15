@@ -30,12 +30,6 @@ if [ ! -x "$(command -v docker)" ]; then
   sudo usermod -aG docker $USER
 fi
 
-# Neofetch
-if [ ! -x "$(command -v neofetch)" ]; then
-  echo "*** Install Fastfetch ***"
-  sudo apt install fastfetch -y
-fi
-
 # ShinSakanami/docker repo
 if [ ! -x "/home/$SUSER/docker" ]; then
   echo "*** Clone ShinSakanami/docker repo ***"
